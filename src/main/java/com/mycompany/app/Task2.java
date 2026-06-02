@@ -1,23 +1,23 @@
 package com.mycompany.app;
 
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 
 public class Task2 {
-    
-    public static void getIpAddress(WebDriver webDriver) {
-        try {
-            webDriver.get("https://api.ipify.org/?format=json");
-            Thread.sleep(1000);
-            WebElement preElement = webDriver.findElement(By.tagName("pre"));
-            String jsonText = preElement.getText();
-            String ip = jsonText.split("\"ip\":\"")[1].split("\"")[0];
-            System.out.println("Your IP address: " + ip);
-            System.out.println();
-        } catch (Exception e) {
-            System.out.println("Error in Task2");
-            System.out.println(e.toString());
-        }
+    private static final String IPIFY_URL = "https://api.ipify.org/?format=json";
+    private static final String RESPONSE_TAG = "pre";
+    private static final String IP_FIELD = "ip";
+
+    public static String getIpAddress(WebDriver driver) {
+        driver.get(IPIFY_URL);
+        String json = driver.findElement(By.tagName(RESPONSE_TAG)).getText();
+        String ip = parseIp(json);
+        System.out.println(ip);
+        return ip;
+    }
+
+    static String parseIp(String json) {
+        return new JSONObject(json).getString(IP_FIELD);
     }
 }
